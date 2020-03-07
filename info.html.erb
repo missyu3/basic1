@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1>ゴーヤ情報</h1>
+    <% require 'pg' %>
+    <% connection = PG::connect(dbname: "goya") %>
+    <% connection.internal_encoding = "UTF-8" %>
+    <% other_result = connection.exec("select length, weight,quality,give_for, date from crops where give_for != '自家消費' ;") %>
+    <% data = [] %>
+    <% other_result.each do |record| %>
+      <% quality = "低品質" %>
+      <% if record["quality"] = true then %>
+      <%      quality = "高品質" %>
+      <% end %>
+      <%  data << "長さ：#{record["length"]} 
+        重量：#{record["weight"]}  
+        品質：#{quality}  
+        売った相手：#{record["give_for"]} 
+        日付：#{record["date"]} "%>
+    <% end %>
+
+    <% inferior_result = connection.exec("select length, weight,quality,give_for, date from crops where quality = false ;") %>
+    <% inferior_data = [] %>
+    <% inferior_result.each do |record| %>
+      <%  inferior_data << "長さ：#{record["length"]} 
+        重量：#{record["weight"]}  
+        品質：粗悪品 
+        売った相手：#{record["give_for"]} 
+        日付：#{record["date"]} "%>
+    <% end %>
+
+    <form action="other_goya.cgi" method="POST">
+        ボタンを押下すると実家消費以外のゴーヤの情報が表示されます。
+        <br>
+        <input type="hidden" name="other_goya" value="<%= data.join('<br>') %>">
+        <input type="submit" name="送信" >
+    </form>
+    <br><br>
+
+    <form action="inferior_goya.cgi" method="POST">
+      ボタンを押下すると粗悪品のゴーヤ情報が表示されます。
+      <br>
+      <input type="hidden" name="inferior_goya" value="<%= inferior_data.join('<br>') %>">
+      <input type="submit" name="送信" >
+    </form>
+  </body>
+</html>
+
+
