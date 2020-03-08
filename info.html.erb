@@ -14,7 +14,8 @@
       <% if record["quality"] = true then %>
       <%      quality = "高品質" %>
       <% end %>
-      <%  data << "長さ：#{record["length"]} 
+      <%  data << "
+        長さ：#{record["length"]} 
         重量：#{record["weight"]}  
         品質：#{quality}  
         売った相手：#{record["give_for"]} 
@@ -24,7 +25,8 @@
     <% inferior_result = connection.exec("select length, weight,quality,give_for, date from crops where quality = false ;") %>
     <% inferior_data = [] %>
     <% inferior_result.each do |record| %>
-      <%  inferior_data << "長さ：#{record["length"]} 
+      <%  inferior_data << 
+        "長さ：#{record["length"]} 
         重量：#{record["weight"]}  
         品質：粗悪品 
         売った相手：#{record["give_for"]} 
@@ -37,7 +39,7 @@
         <input type="hidden" name="other_goya" value="<%= data.join('<br>') %>">
         <input type="submit" name="送信" >
     </form>
-    <br><br>
+    <br>
 
     <form action="inferior_goya.cgi" method="POST">
       ボタンを押下すると粗悪品のゴーヤ情報が表示されます。
